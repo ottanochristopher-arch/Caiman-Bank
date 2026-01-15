@@ -454,7 +454,17 @@ main {
 <!-- Transactions -->
 <div class="transactions-card">
   <h3>Recent Transactions</h3>
-
+<div class="transaction-item">
+    <div class="transaction-left">
+      <div class="transaction-icon" aria-hidden="true">↑</div>
+      <div class="transaction-info">
+        <h4>Real State</h4>
+        <p>15 Jan, 2025</p>
+      </div>
+    </div>
+    <div class="transaction-amount">+£8,420,000</div>
+  </div>
+  
   <div class="transaction-item">
     <div class="transaction-left">
       <div class="transaction-icon" aria-hidden="true">↑</div>
@@ -524,7 +534,7 @@ main {
 
   </main>  <script>
     let balanceVisible = true;
-    const actualBalance = '£7,311,438.66';
+    const actualBalance = '£16,432,168.66';
     const hiddenBalance = '3NCR1P73D';
 
     function toggleBalance() {
