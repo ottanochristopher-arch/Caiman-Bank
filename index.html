@@ -1,0 +1,571 @@
+
+<!-- ANIMACIÓN INICIAL CON LETRAS ALEATORIAS -->
+<div id="black-screen" style="position:fixed; inset:0; background:black; color:lime; font-family:monospace; font-size:1.2rem; display:flex; align-items:center; justify-content:center; z-index:9999; text-align:center;"></div>
+
+<div id="loading-screen" style="position:fixed; inset:0; background:#2563eb; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9998; color:white;">
+  <div style="width:80%; height:8px; background:rgba(255,255,255,0.3); border-radius:4px; overflow:hidden; margin-top:20px;">
+    <div id="progress" style="width:0; height:100%; background:#1e40af; transition: width 0.05s linear;"></div>
+  </div>
+  <div id="welcome-text" style="font-size:1.5rem; letter-spacing:1px; font-weight:600; margin-top:30px; min-height:2rem; text-align:center; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"></div>
+</div>
+
+<script>
+  const blackScreen = document.getElementById('black-screen');
+  const loadingScreen = document.getElementById('loading-screen');
+  const welcomeText = document.getElementById('welcome-text');
+  const progressBar = document.getElementById('progress');
+  
+  function randomChar() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    return chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  // Pantalla negra con letras aleatorias
+  let iteration = 0;
+  const blackInterval = setInterval(() => {
+    blackScreen.textContent = '';
+    for(let i=0;i<100;i++){
+      blackScreen.textContent += randomChar();
+    }
+    iteration++;
+    if(iteration > 20){
+      clearInterval(blackInterval);
+      blackScreen.style.display='none';
+      startLoading();
+    }
+  },50);
+
+  // Barra + letras de bienvenida
+  function startLoading(){
+    loadingScreen.style.display='flex';
+    let width=0;
+    const targetText = 'WELCOME TO CAIMAN BANK';
+    let displayed = Array(targetText.length).fill(' ');
+
+    const progressInterval = setInterval(()=>{
+      width += 1;
+      progressBar.style.width = width + '%';
+
+      for(let i=0;i<targetText.length;i++){
+        if(displayed[i] !== targetText[i]){
+          displayed[i] = Math.random() < width/100 ? targetText[i] : randomChar();
+        }
+      }
+      welcomeText.textContent = displayed.join('');
+
+      if(width>=100){
+        clearInterval(progressInterval);
+        loadingScreen.style.display='none';
+        document.querySelector('main').style.display='block';
+      }
+    },92.7);
+  }
+</script>
+<!DOCTYPE html><html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Caiman Bank - Dashboard</title>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --text: #1a1f2e;
+      --card-shadow: 0 8px 30px rgba(16,24,40,0.18);
+    }body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: white;
+  border-bottom: 1px solid #e8ecef;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+}
+
+main {
+  max-width: 920px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Balance Card */
+.balance-card {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-radius: 1rem;
+  color: white;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: visible;
+}
+
+.balance-label {
+  opacity: 0.9;
+  font-size: 0.9rem;
+}
+
+.balance-amount {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.balance-amount h2 {
+  font-size: 2.2rem;
+  color: white;
+  margin: 0;
+}
+
+.toggle-btn {
+  background: rgba(255,255,255,0.18);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-btn:hover {
+  background: rgba(255,255,255,0.26);
+}
+
+.card-details p {
+  margin: 0.4rem 0 0 0;
+  opacity: 0.95;
+  font-size: 0.9rem;
+}
+
+/* VIP card layout: realista, flotante sobre el balance - AJUSTADA */
+.vip-card {
+  width: 260px;              /* más pequeña */
+  height: 150px;             /* más baja */
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: var(--card-shadow);
+  background: linear-gradient(135deg, #d4af37 0%, #ffd86b 100%); /* dorado */
+  color: #102030;
+  position: absolute;
+  right: 10px;               /* a 30px del borde derecho del recuadro azul */
+  top: 10px;                 /* a 30px del borde superior del recuadro azul */
+  transform: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.18);
+  z-index: 2;                /* aseguramos que quede por encima */
+}
+
+/* small decorative chip */
+.vip-card .chip {
+  width: 44px;
+  height: 32px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6));
+  box-shadow: inset 0 -2px 6px rgba(0,0,0,0.06);
+}
+
+.vip-card .top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Visa Credit arriba a la izquierda en cursiva, grande */
+.vip-card .brand {
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.6px;
+  text-transform: none;
+}
+
+/* VIP Member arriba a la derecha, en grande y elegante */
+.vip-card .vip-label {
+  font-weight: 700;
+  font-size: 0.9rem;
+  font-style: normal;
+  background: rgba(255,255,255,0.12);
+  padding: 5px 8px;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 84px;
+}
+
+/* Número de tarjeta grande y centrado */
+.vip-card .card-number {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.15rem;       /* reducido para encajar */
+  letter-spacing: 2px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.vip-card .meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  opacity: 0.95;
+}
+
+.vip-card .holder {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  letter-spacing: 0.5px;
+}
+
+.vip-card .subtle {
+  font-size: 0.72rem;
+  opacity: 0.95;
+}
+
+/* small Visa logo imitation bottom-right */
+.vip-card .visa-mark {
+  font-style: italic;
+  font-weight: 700;
+  font-size: 0.82rem;
+  background: rgba(0,0,0,0.06);
+  padding: 5px 7px;
+  border-radius: 6px;
+}
+
+/* responsive adjustments */
+@media (max-width: 480px) {
+  .vip-card {
+    width: 220px;
+    height: 130px;
+    right: 12px;
+    top: 12px;
+    transform: rotate(-1deg);
+  }
+  .vip-card .brand { font-size: 0.92rem; }
+  .vip-card .vip-label { font-size: 0.82rem; }
+  .vip-card .card-number { font-size: 0.95rem; }
+}
+
+/* Quick Actions */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2.2rem;
+}
+
+.action-btn {
+  background: white;
+  border: 1px solid #e8ecef;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.action-icon {
+  width: 24px;
+  height: 24px;
+  stroke: #3b82f6;
+}
+
+.transactions-card {
+  background: white;
+  border: 1px solid #e8ecef;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e8ecef;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-info h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.transaction-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.transaction-amount {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.transaction-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(34,197,94,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #22c55e;
+  margin-right: 1rem;
+}
+
+.transaction-left {
+  display: flex;
+  align-items: center;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="logo-circle">C</div>
+      <div>
+        <h1 style="margin:0; font-size:1.05rem;">Caiman Na. Bank</h1>
+        <p style="margin:0; font-size:0.9rem; opacity:0.9;">Hi Christopher!</p>
+      </div>
+    </div>
+    <button class="menu-btn" style="background:transparent;border:none;font-size:1.3rem;cursor:pointer;">☰</button>
+  </header>  <main>
+    <!-- Balance Card -->
+    <div class="balance-card">
+      <p class="balance-label">Total Balance</p>
+      <div class="balance-amount">
+        <h2 id="balanceDisplay">£16,432,168.66</h2>
+        <button class="toggle-btn" onclick="toggleBalance()" aria-label="toggle balance">
+          <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" 
+               stroke-width="2" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 
+                     0 8.268 2.943 9.542 7-1.274 4.057-5.064 
+                     7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+          </svg>
+        </button>
+      </div><div class="card-details">
+    <p>Account: •••• 5711</p>
+    <p>Valid Thru: 12/28</p>
+  </div>
+
+  <!-- Tarjeta VIP dorada, "realista" -->
+  <div class="vip-card" role="group" aria-label="Tarjeta VIP Visa Credit">
+    <div class="top-row">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="chip" aria-hidden="true"></div>
+        <div class="brand">Visa Credit</div>
+      </div>
+      <div class="vip-label" aria-hidden="true">VIP Member</div>
+    </div>
+
+    <!-- Número de tarjeta (Visa: empieza por 4) -->
+    <div>
+      <div class="card-number" id="cardNumber">4929 3100 7245 8672</div>
+      <div class="meta" style="margin-top:10px;">
+        <div>
+          <div class="subtle">VALID THRU</div>
+          <div style="font-weight:700;">12/28</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="subtle">CVV</div>
+          <div style="font-weight:700;">018</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div class="holder" id="cardHolder">Christopher Ottano</div>
+        <div style="font-size:0.72rem; opacity:0.9; margin-top:4px;">Member since 2025</div>
+      </div>
+      <div class="visa-mark" aria-hidden="true">VISA</div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="quick-actions">
+  <button class="action-btn" title="Transfer">
+    <svg class="action-icon" fill="none" stroke="#3b82f6" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+      <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+    </svg>
+    <span>Transfer</span>
+  </button>
+
+  <button class="action-btn" title="Deposit">
+    <svg class="action-icon" fill="none" stroke="#3b82f6" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+      <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+    </svg>
+    <span>Deposit</span>
+  </button>
+
+  <button class="action-btn" title="Regina">
+    <svg class="action-icon" fill="none" stroke="#3b82f6" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+    </svg>
+    <span>Regina</span>
+  </button>
+
+  <button class="action-btn" title="More">
+    <svg class="action-icon" fill="none" stroke="#3b82f6" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+    </svg>
+    <span>More</span>
+  </button>
+</div>
+
+<!-- Transactions -->
+<div class="transactions-card">
+  <h3>Recent Transactions</h3>
+
+  <div class="transaction-item">
+    <div class="transaction-left">
+      <div class="transaction-icon" aria-hidden="true">↑</div>
+      <div class="transaction-info">
+        <h4>Real Estate V2</h4>
+        <p>Today, 23:37 PM</p>
+      </div>
+    </div>
+    <div class="transaction-amount">+£700,000</div>
+  </div>
+  
+  <div class="transaction-item">
+    <div class="transaction-left">
+      <div class="transaction-icon" aria-hidden="true">↑</div>
+      <div class="transaction-info">
+        <h4>Cot&Co</h4>
+        <p>7 Oct, 2025</p>
+      </div>
+    </div>
+    <div class="transaction-amount">+£1,255,011.29</div>
+  </div>
+
+  <div class="transaction-item">
+    <div class="transaction-left">
+      <div class="transaction-icon" aria-hidden="true">↑</div>
+      <div class="transaction-info">
+        <h4>Cot&Co</h4>
+        <p>18 Sept, 2025 </p>
+      </div>
+    </div>
+    <div class="transaction-amount">+£2,507,300</div>
+  </div>
+
+  <div class="transaction-item">
+    <div class="transaction-left">
+      <div class="transaction-icon" aria-hidden="true">↑</div>
+      <div class="transaction-info">
+        <h4>Cot&Co</h4>
+        <p>Aug 4, 2025</p>
+      </div>
+    </div>
+    <div class="transaction-amount">+£2,507,300</div>
+  </div>
+
+  <div class="transaction-item">
+    <div class="transaction-left">
+      <div class="transaction-icon" aria-hidden="true">↑</div>
+      <div class="transaction-info">
+        <h4>Cot&Co</h4>
+        <p>Jul 18, 2025</p>
+      </div>
+    </div>
+    <div class="transaction-amount">+£300,000</div>
+  </div>
+
+  <div class="transaction-item">
+    <div class="transaction-left">
+      <div class="transaction-icon" aria-hidden="true">↑</div>
+      <div class="transaction-info">
+        <h4>Cot&Co</h4>
+        <p>May 21, 2025</p>
+      </div>
+    </div>
+    <div class="transaction-amount">+£741,827.37</div>
+  </div>
+</div>
+
+  </main>  <script>
+    let balanceVisible = true;
+    const actualBalance = '£7,311,438.66';
+    const hiddenBalance = '3NCR1P73D';
+
+    function toggleBalance() {
+      const balanceDisplay = document.getElementById('balanceDisplay');
+      const eyeIcon = document.getElementById('eyeIcon');
+
+      balanceVisible = !balanceVisible;
+      balanceDisplay.textContent = balanceVisible ? actualBalance : hiddenBalance;
+
+      if (balanceVisible) {
+        eyeIcon.innerHTML = `
+          <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 
+                   0 8.268 2.943 9.542 7-1.274 4.057-5.064 
+                   7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>`;
+      } else {
+        eyeIcon.innerHTML = `
+          <path d="M17.94 17.94A10.003 10.003 0 0112 19c-4.478 
+                   0-8.268-2.943-9.542-7a9.953 9.953 
+                   0 012.121-3.362M6.1 6.1A9.969 
+                   9.969 0 0112 5c4.478 0 8.268 
+                   2.943 9.542 7a9.97 9.97 0 
+                   01-4.132 5.411M1 1l22 22"/>`;
+      }
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function genVisaNumber() {
+      const groups = [];
+      for (let i = 0; i < 4; i++) {
+        let block = randomInt(i === 0 ? 4000 : 0, i === 0 ? 4999 : 9999).toString().padStart(4,'0');
+        groups.push(block);
+      }
+      return groups.join(' ');
+    }
+
+    function setRandomCard() {
+      document.getElementById('cardNumber').textContent = genVisaNumber();
+    }
+  </script></body>
+</html>
