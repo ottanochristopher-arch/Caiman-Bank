@@ -10,6 +10,8 @@
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
     @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .fade-in { animation: fadeIn 1.2s ease forwards; }
 
     header { background: white; border-bottom: 1px solid #e8ecef; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
     .logo { display: flex; align-items: center; gap: 1rem; }
@@ -74,6 +76,8 @@
     .transaction-info p { margin:0;font-size:.8rem;color:#6b7280; }
     .transaction-amount { color:#22c55e;font-weight:bold; }
     .transaction-icon { width:36px;height:36px;border-radius:50%;background:rgba(34,197,94,.1);display:flex;align-items:center;justify-content:center;color:#22c55e;margin-right:1rem; }
+    .transaction-icon.expense { background:rgba(239,68,68,.1); color:#ef4444; }
+    .transaction-amount.negative { color: #ef4444; }
     .transaction-left { display:flex;align-items:center; }
 
     .spinner {
@@ -126,6 +130,9 @@
   <div class="spinner-label">VERIFYING ACCESS...</div>
 </div>
 
+<!-- OVERLAY BLANCO para transición suave -->
+<div id="white-overlay" style="position:fixed;inset:0;background:white;z-index:9997;display:none;pointer-events:none;transition:opacity 1.4s ease;"></div>
+
 <!-- DASHBOARD -->
 <div id="app" style="display:none;">
   <header>
@@ -145,11 +152,10 @@
       <div class="balance-inner">
         <p class="balance-label">Total Balance</p>
         <div class="balance-amount">
-          <h2 id="balanceDisplay">£16,432,168.66</h2>
+          <h2 id="balanceDisplay">********</h2>
           <button class="toggle-btn" onclick="toggleBalance()">
             <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="24" height="24">
-              <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-              <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              <path d="M17.94 17.94A10.003 10.003 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.953 9.953 0 012.121-3.362M6.1 6.1A9.969 9.969 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.97 9.97 0 01-4.132 5.411M1 1l22 22"/>
             </svg>
           </button>
         </div>
@@ -208,13 +214,35 @@
     <!-- Transactions -->
     <div class="transactions-card">
       <h3>Recent Transactions</h3>
-      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Real Estate</h4><p>15 Jan, 2025</p></div></div><div class="transaction-amount">+£8,420,000</div></div>
-      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Real Estate V2</h4><p>7 Nov, 2024</p></div></div><div class="transaction-amount">+£700,000</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Real Estate V2</h4><p>24 Apr, 2026</p></div></div><div class="transaction-amount">+£900,000</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Chrono24</h4><p>22 Apr, 2026</p></div></div><div class="transaction-amount negative">-£38,500</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Property Management</h4><p>20 Apr, 2026</p></div></div><div class="transaction-amount negative">-£12,750</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Cot&amp;Co</h4><p>18 Apr, 2026</p></div></div><div class="transaction-amount">+£2,750,000</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Maintenance & Repairs</h4><p>15 Apr, 2026</p></div></div><div class="transaction-amount negative">-£7,200</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Real Estate</h4><p>9 Apr, 2026</p></div></div><div class="transaction-amount">+£4,000,000</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Accounting Services</h4><p>7 Apr, 2026</p></div></div><div class="transaction-amount negative">-£39,400</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Huntsman & Sons</h4><p>5 Apr, 2026</p></div></div><div class="transaction-amount negative">-£18,900</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Cot&amp;Co</h4><p>1 Apr, 2026</p></div></div><div class="transaction-amount">+£1,850,000</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Consultancy Fees</h4><p>28 Mar, 2026</p></div></div><div class="transaction-amount negative">-£5,600</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Real Estate V2</h4><p>22 Mar, 2026</p></div></div><div class="transaction-amount">+£3,200,000</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Office & Admin</h4><p>18 Mar, 2026</p></div></div><div class="transaction-amount negative">-£9,850</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Legal & Advisory</h4><p>14 Mar, 2026</p></div></div><div class="transaction-amount negative">-£33,000</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Cot&amp;Co</h4><p>10 Mar, 2026</p></div></div><div class="transaction-amount">+£700,000</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Maintenance & Repairs</h4><p>19 Oct, 2025</p></div></div><div class="transaction-amount negative">-£4,300</div></div>
       <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Cot&amp;Co</h4><p>7 Oct, 2025</p></div></div><div class="transaction-amount">+£1,255,011.29</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Anderson & Sheppard</h4><p>28 Sept, 2025</p></div></div><div class="transaction-amount negative">-£16,400</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Insurance Premium</h4><p>24 Sept, 2025</p></div></div><div class="transaction-amount negative">-£22,100</div></div>
       <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Cot&amp;Co</h4><p>18 Sept, 2025</p></div></div><div class="transaction-amount">+£2,507,300</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Consultancy Fees</h4><p>14 Aug, 2025</p></div></div><div class="transaction-amount negative">-£11,750</div></div>
       <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Cot&amp;Co</h4><p>4 Aug, 2025</p></div></div><div class="transaction-amount">+£2,507,300</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Accounting Services</h4><p>28 Jul, 2025</p></div></div><div class="transaction-amount negative">-£37,800</div></div>
       <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Cot&amp;Co</h4><p>18 Jul, 2025</p></div></div><div class="transaction-amount">+£300,000</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Office & Admin</h4><p>3 Jun, 2025</p></div></div><div class="transaction-amount negative">-£6,900</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Legal & Advisory</h4><p>11 May, 2025</p></div></div><div class="transaction-amount negative">-£25,600</div></div>
       <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Cot&amp;Co</h4><p>21 May, 2025</p></div></div><div class="transaction-amount">+£741,827.37</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Real Estate</h4><p>15 Jan, 2025</p></div></div><div class="transaction-amount">+£8,420,000</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon expense">↓</div><div class="transaction-info"><h4>Maintenance & Repairs</h4><p>28 Dec, 2024</p></div></div><div class="transaction-amount negative">-£3,600</div></div>
+      <div class="transaction-item"><div class="transaction-left"><div class="transaction-icon">↑</div><div class="transaction-info"><h4>Real Estate V2</h4><p>7 Nov, 2024</p></div></div><div class="transaction-amount">+£700,000</div></div>
     </div>
   </main>
 </div>
@@ -291,24 +319,58 @@
   // 4. Spinner 3–7 segundos, fondo azul
   function showSpinner() {
     const spinnerScreen = document.getElementById('spinner-screen');
+    const overlay = document.getElementById('white-overlay');
+    const app = document.getElementById('app');
     spinnerScreen.style.display = 'flex';
     const delay = 3000 + Math.random() * 4000;
     setTimeout(() => {
-      spinnerScreen.style.display = 'none';
-      document.getElementById('app').style.display = 'block';
+      // Fade out spinner hacia blanco
+      overlay.style.display = 'block';
+      overlay.style.opacity = '1';
+      setTimeout(() => {
+        spinnerScreen.style.display = 'none';
+        app.style.display = 'block';
+        app.classList.add('fade-in');
+        // Desvanecer el overlay blanco
+        overlay.style.opacity = '0';
+        setTimeout(() => { overlay.style.display = 'none'; }, 1400);
+      }, 600);
     }, delay);
   }
 
-  // 5. Toggle balance
-  let balanceVisible = true;
+  // 5. Toggle balance — empieza oculto
+  let balanceVisible = false;
+  let animating = false;
+  const actualBalance = '£29,831,438.66';
+
   function toggleBalance() {
+    if (animating) return;
     const d = document.getElementById('balanceDisplay');
     const e = document.getElementById('eyeIcon');
     balanceVisible = !balanceVisible;
-    d.textContent = balanceVisible ? '£16,432,168.66' : '3NCR1P73D';
-    e.innerHTML = balanceVisible
-      ? '<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>'
-      : '<path d="M17.94 17.94A10.003 10.003 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.953 9.953 0 012.121-3.362M6.1 6.1A9.969 9.969 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.97 9.97 0 01-4.132 5.411M1 1l22 22"/>';
+
+    if (balanceVisible) {
+      e.innerHTML = '<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+      // Revelar carácter a carácter
+      animating = true;
+      const stars = '********'.split('');
+      const target = actualBalance.split('');
+      const maxLen = target.length;
+      let current = Array(maxLen).fill('*');
+      // Ajustar longitud inicial de estrellas al largo del balance
+      d.textContent = current.join('');
+      const interval = 600 / maxLen;
+      let i = 0;
+      const iv = setInterval(() => {
+        current[i] = target[i];
+        d.textContent = current.join('');
+        i++;
+        if (i >= maxLen) { clearInterval(iv); animating = false; }
+      }, interval);
+    } else {
+      e.innerHTML = '<path d="M17.94 17.94A10.003 10.003 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.953 9.953 0 012.121-3.362M6.1 6.1A9.969 9.969 0 0112 5c4.478 0 8.268 2.943 9.542 7a9.97 9.97 0 01-4.132 5.411M1 1l22 22"/>';
+      d.textContent = '********';
+    }
   }
 </script>
 </body>
